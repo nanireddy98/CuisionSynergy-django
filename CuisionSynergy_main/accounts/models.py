@@ -46,11 +46,11 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     """Custom User model that replaces Django's default user model.
     Supports additional fields and role-based functionality."""
-    RESTAURANT = 1
+    VENDOR = 1
     CUSTOMER = 2
 
     ROLE_CHOICES = (
-        (RESTAURANT, 'Restaurant'),  # Role for restaurant users
+        (VENDOR, 'Vendor'),  # Role for restaurant users
         (CUSTOMER, 'Customer')  # Role for customer users
     )
 
