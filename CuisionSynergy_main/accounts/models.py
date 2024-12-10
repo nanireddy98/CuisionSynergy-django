@@ -90,6 +90,13 @@ class User(AbstractBaseUser):
         """Determine if the user has permissions for a specific app."""
         return True
 
+    def get_role(self):
+        if self.role == 1:
+            user_role = 'Vendor'
+        else:
+            user_role = 'Customer'
+        return user_role
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
