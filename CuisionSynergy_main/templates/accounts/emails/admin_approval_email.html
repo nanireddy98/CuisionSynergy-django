@@ -1,0 +1,11 @@
+{% load static %}
+{% autoescape off %}
+
+Hi {{user.first_name}},
+{% if is_approved %}
+    Congratulations!Your Account has been Approved -- CuisionSynergyTeam
+{% else %}
+    We're Sorry! You are not eligible to publishing your food menu on our marketplace. please Contact support@cuisionsynergy.com -- CuisionSynergyTeam
+{% endif %}
+
+{% endautoescape %}

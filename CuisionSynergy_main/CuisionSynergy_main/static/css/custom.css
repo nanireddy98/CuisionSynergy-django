@@ -11,4 +11,5 @@
     bottom:100%;
     animation-name:show-toast;
     animation-duration:5s;
+    z-index:99;
 }
