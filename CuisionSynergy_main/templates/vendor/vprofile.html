@@ -29,9 +29,15 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img class="thumbnail"
-                                                                                 src="{{ profile.profile_photo.url }}"
-                                                                                 alt="Update Logo">
+                                                                            {% if profile.profile_photo %}
+                                                                                <img class="thumbnail"
+                                                                                     src="{{ profile.profile_photo.url }}"
+                                                                                     alt="Update Logo">
+                                                                            {% else %}
+                                                                                <img class="thumbnail"
+                                                                                     src="{% static 'images/default-profile.PNG' %}"
+                                                                                     alt="Update Logo">
+                                                                            {% endif %}
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -53,9 +59,15 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
+                                                                            {% if profile.cover_photo %}
                                                                             <img class="thumbnail"
                                                                                  src="{{ profile.cover_photo.url }}"
                                                                                  alt="Cover Photo">
+                                                                            {% else %}
+                                                                                 <img class="thumbnail"
+                                                                                 src="{% static 'images/default-cover.PNG' %}"
+                                                                                 alt="Cover Photo">
+                                                                            {% endif %}
                                                                         </div>
                                                                     </div>
                                                                 </li>
