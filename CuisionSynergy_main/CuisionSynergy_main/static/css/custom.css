@@ -20,3 +20,15 @@
     cursor: pointer;
 }
 
+table > tbody > tr > td {
+    width: 500px;
+    border: none !important;
+}
+
+#opening_hours select {
+    padding: 5px 10px !important;
+}
+
+.btn-success.add_hour {
+    padding: 7px 15px 7px 15px;
+}

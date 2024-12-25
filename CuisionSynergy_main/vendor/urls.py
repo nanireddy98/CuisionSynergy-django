@@ -18,4 +18,9 @@ urlpatterns = [
     path('menu_builder/food/add/', views.add_food, name='add_food'),
     path('menu_builder/food/edit/<int:pk>/', views.edit_food, name='edit_food'),
     path('menu_builder/food/delete/<int:pk>/', views.delete_food, name='delete_food'),
+
+    # opening hours
+    path('opening-hour', views.opening_hour, name='opening-hour'),
+    path('opening-hour/add', views.opening_hour_add, name='opening-hour-add'),
+    path('opening-hour/remove/<int:pk>/', views.remove_opening_hour, name='remove_opening_hour'),
 ]
