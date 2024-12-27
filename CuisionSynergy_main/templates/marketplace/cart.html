@@ -25,40 +25,39 @@
 
                                         <ul>
                                             {% if cartitems %}
-                                            {% for item in cartitems %}
-                                            <li id="cart-item-{{ item.id }}">
-                                                <div class="image-holder">
-                                                    <img src="{{item.fooditem.image.url}}" alt="">
-                                                </div>
-                                                <div class="text-holder">
-                                                    <h6>{{item.fooditem}}</h6>
-                                                    <span>{{item.fooditem.description}}</span>
-                                                    <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}"
-                                                       class="badge badge-warning">{{ item.fooditem.vendor.vendor_name
-                                                        }}</a>
-                                                </div>
-                                                <div class="price-holder">
-                                                    <span class="price">&#x20b9; {{ item.fooditem.price }}</span>
+                                                {% for item in cartitems %}
+                                                    <li id="cart-item-{{ item.id }}">
+                                                        <div class="image-holder">
+                                                            <img src="{{item.fooditem.image.url}}" alt="">
+                                                        </div>
+                                                        <div class="text-holder">
+                                                            <h6>{{item.fooditem}}</h6>
+                                                            <span>{{item.fooditem.description}}</span>
+                                                            <a href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}"
+                                                               class="badge badge-warning">{{ item.fooditem.vendor.vendor_name}}</a>
+                                                        </div>
+                                                        <div class="price-holder">
+                                                            <span class="price">&#x20b9; {{ item.fooditem.price }}</span>
 
-                                                    <a href="#" class="decrease_cart" data-id="{{ item.fooditem.id }}"
-                                                       id="{{ item.id }}"
-                                                       data-url="{% url 'decrease_cart' item.fooditem.id %}"
-                                                       style="margin-right:28px;"><i class="icon-minus text-color"></i></a>
+                                                            <a href="#" class="decrease_cart" data-id="{{ item.fooditem.id }}"
+                                                               id="{{ item.id }}"
+                                                               data-url="{% url 'decrease_cart' item.fooditem.id %}"
+                                                               style="margin-right:28px;"><i class="icon-minus text-color"></i></a>
 
-                                                    <label id="qty-{{ item.fooditem.id }}">0</label>
-                                                    <a href="#" class="add_to_cart" data-id="{{ item.fooditem.id}}"
-                                                       data-url="{% url 'add_to_cart' item.fooditem.id %}"><i
-                                                            class="icon-plus4 text-color"></i></a>
-                                                    <a href="#" class="delete_cart" data-id="{{ item.id}}"
-                                                       data-url="{% url 'delete_cart' item.id %}"><i
-                                                            class="icon-delete text-color"></i></a>
-                                                </div>
-                                            </li>
-                                            {% endfor %}
+                                                            <label id="qty-{{ item.fooditem.id }}">0</label>
+                                                            <a href="#" class="add_to_cart" data-id="{{ item.fooditem.id}}"
+                                                               data-url="{% url 'add_to_cart' item.fooditem.id %}"><i
+                                                                    class="icon-plus4 text-color"></i></a>
+                                                            <a href="#" class="delete_cart" data-id="{{ item.id}}"
+                                                               data-url="{% url 'delete_cart' item.id %}"><i
+                                                                    class="icon-delete text-color"></i></a>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
                                             {% else %}
-                                            <div class="text-center p-5">
-                                                <h3>Cart Is Empty</h3>
-                                            </div>
+                                                <div class="text-center p-5">
+                                                    <h3>Cart Is Empty</h3>
+                                                </div>
                                             {% endif %}
                                         </ul>
                                     </div>
@@ -73,9 +72,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="tabs-holder horizontal">
                         <ul class="stickynav-tabs nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Your
-                                Orders</a>
-                            </li>
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>YourOrders</a></li>
 
                         </ul>
                         <div class="tab-content">
@@ -91,13 +88,17 @@
                                                     <span id="subtotal">{{ sub_total }}</span>
                                                 </span>
                                             </li>
-                                            <li style="list-style-type:none">
-                                                Tax
-                                                <span class="price float-right">
-                                                    <span class="currency">&#x20b9;</span>
-                                                    <span id="tax">{{ tax }}</span>
-                                                </span>
-                                            </li>
+                                            {% for key,value in tax_dict.items %}
+                                                {% for i,j in value.items %}
+                                                <li style="list-style-type:none">
+                                                    {{ key }} <small>({{ i }}%)</small>
+                                                    <span class="price float-right">
+                                                        <span class="currency">&#x20b9;</span>
+                                                        <span id="tax-{{ key }}">{{ j }}</span>
+                                                    </span>
+                                                </li>
+                                                {% endfor %}
+                                            {% endfor %}
                                             <li style="list-style-type:none;font-weight:600">
                                                 Total
                                                 <span class="price float-right">
