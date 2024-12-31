@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'vendor',
     'menu',
     'marketplace',
-    'customers'
+    'customers',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -70,9 +71,10 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_google_api_key',
+                'accounts.context_processors.get_user_profile',
+                'accounts.context_processors.get_paypal_client_id',
                 'marketplace.context_processors.get_cart_counter',
                 'marketplace.context_processors.get_cart_amounts',
-                'accounts.context_processors.get_user_profile',
             ],
         },
     },
@@ -158,6 +160,13 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = "CuisionSynergy <nagendrareddy539@gmail.com>"
 
-GOOGLE_API_KEY = 'AIzaSyDd4sSU0gHTCcH-Lof3oZMhNjfWXXSilKA'
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal309.dll'
+
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
+
+SECURE_CROSS_ORIGN_OPENER_POLICY = 'same-origin-allow-popups'
+
+
+

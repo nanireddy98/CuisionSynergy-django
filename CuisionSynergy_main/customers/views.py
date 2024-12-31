@@ -17,6 +17,9 @@ def cprofile(request):
             user_form.save()
             messages.success(request,"Profile Updated Successfully")
             return redirect('cprofile')
+        else:
+            print(profile_form.errors)
+            print(user_form.errors)
     else:
         profile_form = UserProfileForm(instance=profile)
         user_form = UserInfoForm(instance=request.user)

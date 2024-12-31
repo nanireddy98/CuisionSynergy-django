@@ -8,11 +8,13 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D  # D is shortcut for Distance
 from django.contrib.gis.db.models.functions import Distance
 
+from accounts.models import UserProfile
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
 from .models import Cart
 from .context_processors import get_cart_counter, get_cart_amounts
 from vendor.models import OpeningHour
+from orders.forms import OrderForm
 
 
 def marketplace(request):
@@ -34,7 +36,7 @@ def vendor_detail(request, vendor_slug):
         )
     )
 
-    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day','-from_hour')
+    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
 
     # check current day's Opening hours
     today = date.today().isoweekday()
@@ -185,15 +187,21 @@ def search(request):
         radius = request.GET['radius']
 
         # Retrieve vendor IDs that offer the specified food item requested by the user
-        fetch_vendors_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword,is_available=True).values_list('vendor',flat=True)
+        fetch_vendors_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword,
+                                                             is_available=True).values_list('vendor', flat=True)
 
-        vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_fooditems) | Q(vendor_name__icontains=keyword,is_approved=True,user__is_active=True))
+        vendors = Vendor.objects.filter(
+            Q(id__in=fetch_vendors_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True,
+                                                     user__is_active=True))
         if latitude and longitude and radius:
             pnt = GEOSGeometry(f'POINT({longitude} {latitude})')
-            vendors = Vendor.objects.filter(Q(id__in=fetch_vendors_by_fooditems) | Q(vendor_name__icontains=keyword,is_approved=True,user__is_active=True),
-                                            user_profile__location__distance_lte=(pnt, D(km=radius))).annotate(distance=Distance("user_profile__location",pnt)).order_by("distance")
+            vendors = Vendor.objects.filter(
+                Q(id__in=fetch_vendors_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True,
+                                                         user__is_active=True),
+                user_profile__location__distance_lte=(pnt, D(km=radius))).annotate(
+                distance=Distance("user_profile__location", pnt)).order_by("distance")
             for v in vendors:
-                v.kms = round(v.distance.km,1)
+                v.kms = round(v.distance.km, 1)
         vendor_count = vendors.count()
 
         context = {
@@ -201,9 +209,29 @@ def search(request):
             'vendor_count': vendor_count,
             'source_location': address
         }
-        return render(request,"marketplace/listings.html",context)
+        return render(request, "marketplace/listings.html", context)
 
 
-
-
-
+def checkout(request):
+    cartitems = Cart.objects.filter(user=request.user).order_by('created_at')
+    cart_count = cartitems.count()
+    if cart_count <= 0:
+        return redirect('marketplace')
+    user_profile = UserProfile.objects.get(user=request.user)
+    default_values = {
+        'first_name': request.user.first_name,
+        'last_name': request.user.last_name,
+        'phone': request.user.phone_number,
+        'email': request.user.email,
+        'address': user_profile.address,
+        'country': user_profile.country,
+        'state': user_profile.state,
+        'city': user_profile.city,
+        'pin_code': user_profile.pincode,
+    }
+    form = OrderForm(initial=default_values)
+    context = {
+        'form': form,
+        'cartitems': cartitems
+    }
+    return render(request, "marketplace/checkout.html", context)
