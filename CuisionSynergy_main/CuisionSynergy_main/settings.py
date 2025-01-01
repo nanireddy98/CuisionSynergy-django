@@ -164,9 +164,16 @@ GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal309.dll'
 
+SECURE_CROSS_ORIGN_OPENER_POLICY = 'same-origin-allow-popups'
+
+# PayPal
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
-SECURE_CROSS_ORIGN_OPENER_POLICY = 'same-origin-allow-popups'
+# RazorPay
+RZP_KEY_ID = config('RZP_KEY_ID')
+RZP_KEY_SECRET = config('RZP_KEY_SECRET')
+
+
 
 
 

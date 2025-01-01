@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 import simplejson as json
 from django.contrib.auth.decorators import login_required
+import razorpay
 
 from .forms import OrderForm
 from marketplace.context_processors import get_cart_amounts
@@ -9,6 +10,9 @@ from .models import Order, Payment, OrderedFood
 from marketplace.models import Cart
 from .utils import get_order_number
 from accounts.utils import send_notification_mail
+from CuisionSynergy_main.settings import RZP_KEY_ID, RZP_KEY_SECRET
+
+client = razorpay.Client(auth=(RZP_KEY_ID, RZP_KEY_SECRET))
 
 
 @login_required(login_url='login')
@@ -44,9 +48,26 @@ def place_order(request):
             order.save()
             order.order_number = get_order_number(order.id)
             order.save()
+
+            # razorpay payment
+            data = {
+                "amount": float(order.total)*100,
+                "currency": "INR",
+                "receipt": "receipt #"+order.order_number,
+                "notes": {
+                    "key1": "value3",
+                    "key2": "value2"
+                }
+            }
+            rzp_order = client.order.create(data=data)
+            rzp_order_id = rzp_order['id']
+
             context = {
                 'order': order,
-                'cartitems': cartitems
+                'cartitems': cartitems,
+                'rzp_order_id': rzp_order_id,
+                'rzp_amount': float(order.total)*100,
+                'RZP_KEY_ID': RZP_KEY_ID
             }
             return render(request, "orders/place_order.html", context)
         else:
