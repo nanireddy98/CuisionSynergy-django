@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'orders.request_obj.RequestObjMiddleWare',  # custom Middleware created to access request object in models.py
 ]
 
 ROOT_URLCONF = 'CuisionSynergy_main.urls'

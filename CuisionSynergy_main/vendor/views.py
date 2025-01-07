@@ -12,6 +12,7 @@ from .models import Vendor, OpeningHour
 from accounts.views import check_role_vendor
 from menu.models import Category, FoodItem
 from menu.forms import CategoryForm, FoodItemForm
+from orders.models import Order, OrderedFood
 
 
 def get_vendor(request):
@@ -214,9 +215,11 @@ def opening_hour_add(request):
                 if hour:
                     day = OpeningHour.objects.get(id=hour.id)
                     if day.is_closed:
-                        response = {'status': 'success', 'id': hour.id, 'day': day.get_day_display(), 'is_closed': 'Closed'}
+                        response = {'status': 'success', 'id': hour.id, 'day': day.get_day_display(),
+                                    'is_closed': 'Closed'}
                     else:
-                        response = {'status': 'success', 'id': hour.id, 'day': day.get_day_display(), 'from_hour': hour.from_hour, 'to_hour': hour.to_hour}
+                        response = {'status': 'success', 'id': hour.id, 'day': day.get_day_display(),
+                                    'from_hour': hour.from_hour, 'to_hour': hour.to_hour}
                 return JsonResponse(response)
             except IntegrityError as e:
                 response = {'status': 'failed', 'message': from_hour + '-' + to_hour + ' already exists for this day!'}
@@ -231,3 +234,25 @@ def remove_opening_hour(request, pk):
             hour = get_object_or_404(OpeningHour, pk=pk)
             hour.delete()
             return JsonResponse({'status': 'success', 'id': pk})
+
+
+def order_detail(request, order_number):
+    order = Order.objects.get(order_number=order_number, is_ordered=True)
+    ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
+    context = {
+        'order': order,
+        'ordered_food': ordered_food,
+        'subtotal': order.get_total_by_vendor()['subtotal'],
+        'taxdata': order.get_total_by_vendor()['tax_data'],
+        'grand_total': order.get_total_by_vendor()['grand_total']
+    }
+    return render(request, "vendor/order_detail.html", context)
+
+
+def my_orders(request):
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
+    context = {
+        'orders': orders
+    }
+    return render(request, "vendor/my_orders.html", context)

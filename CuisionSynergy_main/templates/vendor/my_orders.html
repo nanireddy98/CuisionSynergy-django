@@ -5,12 +5,12 @@
 {% block content %}
 
 <div class="main-section">
-    {% include 'customers/cover.html' %}
+    {% include 'includes/cover.html' %}
     <div class="page-section account-header buyer-logged-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    {% include 'includes/c_sidebar.html' %}
+                    {% include 'includes/v_sidebar.html' %}
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
@@ -34,12 +34,12 @@
                                                 <tbody>
                                                     {% for order in orders %}
                                                     <tr>
-                                                        <td><b><a href="{% url 'order_detail' order.order_number %}" class="text-dark">{{ order.order_number }}</a></b></td>
+                                                        <td><b><a href="{% url 'vendor_order_detail' order.order_number %}" class="text-dark">{{ order.order_number }}</a></b></td>
                                                         <td>{{ order.first_name }}</td>
-                                                        <td>&#x20b9; {{ order.total }}</td>
+                                                        <td>&#x20b9; {{ order.get_total_by_vendor.grand_total }}</td>
                                                         <td>{{ order.status }}</td>
                                                         <td>{{ order.created_at|date:"M'd Y" }}</td>
-                                                        <td><a href="{% url 'order_detail' order.order_number%}"><button class="btn btn-danger">Details</button></a></td>
+                                                        <td><a href="{% url 'vendor_order_detail' order.order_number%}"><button class="btn btn-danger">Details</button></a></td>
                                                     </tr>
                                                     {% endfor %}
                                                 </tbody>
