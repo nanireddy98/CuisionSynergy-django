@@ -3,12 +3,13 @@ from django.http import HttpResponse, JsonResponse
 import simplejson as json
 from django.contrib.auth.decorators import login_required
 import razorpay
+from django.contrib.sites.shortcuts import get_current_site
 
 from .forms import OrderForm
 from marketplace.context_processors import get_cart_amounts
 from .models import Order, Payment, OrderedFood
 from marketplace.models import Cart, FoodItem, Tax
-from .utils import get_order_number
+from .utils import get_order_number, order_total_by_vendor
 from accounts.utils import send_notification_mail
 from CuisionSynergy_main.settings import RZP_KEY_ID, RZP_KEY_SECRET
 
@@ -149,10 +150,19 @@ def payments(request):
         # Send Order Confirmation email to customer
         mail_subject = "Thankyou for Ordering With Us"
         mail_template = 'orders/order_confirmation_email_customer.html'
+        ordered_food = OrderedFood.objects.filter(order=order)
+        customer_subtotal = 0
+        for item in ordered_food:
+            customer_subtotal += (item.price * item.quantity)
+        tax_data = json.loads(order.tax_data)
         context = {
             'user': request.user,
             'order': order,
-            'to_email': order.email
+            'to_email': order.email,
+            'ordered_food': ordered_food,
+            'domain': get_current_site(request),
+            'customer_subtotal': customer_subtotal,
+            'tax_data': tax_data,
         }
         send_notification_mail(mail_subject, mail_template, context)
         # return HttpResponse("Ordered Food Saved and Email Sen To Customer")
@@ -164,12 +174,19 @@ def payments(request):
         for i in cartitems:
             if i.fooditem.vendor.user.email not in to_emails:
                 to_emails.append(i.fooditem.vendor.user.email)
-        context = {
-            'user': request.user,
-            'order': order,
-            'to_email': to_emails
-        }
-        send_notification_mail(mail_subject, mail_template, context)
+
+                ordered_food_to_vendor = OrderedFood.objects.filter(order=order, fooditem__vendor=i.fooditem.vendor)
+
+                context = {
+                    'user': request.user,
+                    'order': order,
+                    'to_email': i.fooditem.vendor.user.email,
+                    'ordered_food_to_vendor': ordered_food_to_vendor,
+                    'vendor_subtotal': order_total_by_vendor(order, i.fooditem.vendor.id)['subtotal'],
+                    'tax_data': order_total_by_vendor(order, i.fooditem.vendor.id)['tax_data'],
+                    'vendor_grand_total': order_total_by_vendor(order, i.fooditem.vendor.id)['grand_total']
+                }
+                send_notification_mail(mail_subject, mail_template, context)
         # return HttpResponse("Ordered Food Saved and Email Sent To Vendor")
 
         # clear cart if payment is Success

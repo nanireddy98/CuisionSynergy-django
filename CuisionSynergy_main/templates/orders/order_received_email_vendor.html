@@ -1,10 +1,170 @@
 {% load static %}
-{% autoescape off %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:v="urn:schemas-microsoft-com:vml" lang="en">
 
-Hi {{user.first_name}},
+<head>
+    <link rel="stylesheet" type="text/css" hs-webfonts="true"
+          href="https://fonts.googleapis.com/css?family=Lato|Lato:i,b,bi">
+    <meta property="og:title" content="Email template">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            color: #33475B;
+            background-color: #F5F8FA;
+            word-break: break-word;
+        }
+        #email {
+            margin: auto;
+            width: 600px;
+            background-color: white;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        .header, .footer {
+            background-color: #F8F8F8;
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            width: 200px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .order-details, .ordered-food, .order-amounts {
+            background-color: #FFF;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+        }
+        .order-details td, .ordered-food td, .order-amounts td {
+            padding: 10px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .ordered-food th {
+            text-align: left;
+            padding: 10px;
+            background-color: #F8F8F8;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .ordered-food img {
+            border-radius: 4px;
+        }
+        .order-amounts td {
+            text-align: right;
+        }
+        .footer {
+            color: #777;
+        }
+        .footer a {
+            color: #C33332;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="email">
+    <div class="header">
+        <img alt="Logo" src="https://rathank.com/foodonline/logo/logo.png">
+    </div>
 
-You Have Received a New Order.
-Your Order Number: {{ order.order_number }}
-TransactionID : {{ order.payment.transaction_id }}
+    <div class="content">
+        <div class="order-details">
+            <h2>Thank You for Your Order</h2>
+            <p>Please review your order below:</p>
+            <table width="100%">
+                <tr>
+                    <td>Order Date:</td>
+                    <td>{{ order.created_at }}</td>
+                </tr>
+                <tr>
+                    <td>Order Number:</td>
+                    <td>{{ order.order_number }}</td>
+                </tr>
+                <tr>
+                    <td>Payment Method:</td>
+                    <td>{{ order.payment_method }}</td>
+                </tr>
+                <tr>
+                    <td>Transaction ID:</td>
+                    <td>{{ order.payment.transaction_id }}</td>
+                </tr>
+            </table>
+        </div>
 
-{% endautoescape %}
+        <div class="ordered-food">
+            <h2>Ordered Food</h2>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Food Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for food in ordered_food_to_vendor %}
+                        <tr>
+                            <td><img src="{{ food.fooditem.image.url }}" alt="Food Image" width="60"></td>
+                            <td>
+                                <p>{{ food.fooditem }}</p>
+                                <small><a href="http://{{ domain }}{% url 'vendor_detail' food.fooditem.vendor.vendor_slug %}">{{ food.fooditem.vendor.vendor_name }}</a></small>
+                            </td>
+                            <td>{{ food.quantity }}</td>
+                            <td>&#x20b9; {{ food.price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="order-amounts">
+            <h2>Order Summary</h2>
+            <table width="100%">
+                <tr>
+                    <td>Subtotal:</td>
+                    <td>&#x20b9; {{ vendor_subtotal }}</td>
+                </tr>
+                {% for key, value in tax_data.items %}
+                    {% for i, j in value.items %}
+                        <tr>
+                            <td>{{ key }}<small> ({{ i }})</small>:</td>
+                            <td>&#x20b9; {{ j }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                <tr>
+                    <td><strong>Grand Total:</strong></td>
+                    <td><strong>&#x20b9; {{ vendor_grand_total }}</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© {% now "Y" %} FoodOnline Marketplace, All Rights Reserved.</p>
+        <a href="http://{{ domain }}">Visit Website</a>
+    </div>
+</div>
+</body>
+</html>

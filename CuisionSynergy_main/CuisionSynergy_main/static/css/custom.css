@@ -49,7 +49,36 @@ table > tbody > tr > td {
     outline: 2px solid #ff0000;
 }
 
+/* Mobile Friendly */
+@media only screen and (max-width: 600px) {
+    a.get-start-btn{
+        display: block;
+        margin-top: 15px !important;
+        margin-left: 0 !important;
+    }
+    .main-search-bar{
+        padding-top: 100px !important;
+        padding-bottom: 50px !important;
+        background-position:left !important;
+    }
+    .user-dashboard{
+        width:100% !important;
+    }
+    .menu-itam-holder .quantity{
+        right:0 !important;
+        margin-top: -30px !important;
+    }
+    .table.opening_hours{
+        width:100% !important;
+    }
+    .table td{
+        padding:0.05rem !important;
+    }
+}
 
+table td, table th{
+    line-height: 1rem !important;
+}
 
 
 

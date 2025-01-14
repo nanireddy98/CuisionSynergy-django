@@ -17,7 +17,6 @@ def post_save_create_profile_receiver(sender,instance,created,**kwargs):
     if created:
         # Create a UserProfile for the newly created User.
         UserProfile.objects.create(user=instance)
-        print("\nuser profile created")
     else:
         try:
             # Attempt to fetch the existing UserProfile and save it.
@@ -26,8 +25,6 @@ def post_save_create_profile_receiver(sender,instance,created,**kwargs):
         except:
             # If no UserProfile exists, create a new one.
             UserProfile.objects.create(user=instance)
-            print("\nuser profile not exist,so i created new")
-        print("\nuser profile updated")
 
 
 @receiver(pre_save,sender=User)

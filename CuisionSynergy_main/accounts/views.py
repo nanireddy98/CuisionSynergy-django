@@ -109,7 +109,6 @@ def registerVendor(request):
             messages.success(request, "Your account has been Registered Successfully.\nPlease Wait for Approval")
             return redirect('registerVendor')
         else:
-            print("Invalid form")
             print(form.errors)
     else:
         form = UserForm()

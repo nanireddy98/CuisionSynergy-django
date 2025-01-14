@@ -74,7 +74,7 @@
                                                         <td>{{ order.first_name }}</td>
                                                         <td>&#x20b9; {{ order.get_total_by_vendor.grand_total }}</td>
                                                         <td>{{ order.status }}</td>
-                                                        <td>{{ order.created_at|date:"M'd Y" }}</td>
+                                                        <td>{{ order.created_at}}</td>
                                                         <td><a href="{% url 'vendor_order_detail' order.order_number%}"><button class="btn btn-danger">Details</button></a></td>
                                                     </tr>
                                                     {% endfor %}
