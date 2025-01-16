@@ -131,13 +131,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Static files configuration
+# Static files are assets like CSS, JavaScript, and images that are served to clients
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     'CuisionSynergy_main/static'
 ]
 
-# media fiels
+# Media files configuration
+# Media files are user-uploaded content (images, videos, documents)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -153,28 +156,29 @@ MESSAGE_TAGS = {
 }
 
 # Email Configuration
-EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS')
-EMAIL_PORT = config('EMAIL_PORT')
+# Ensure sensitive data is stored securely in environment variables (e.g., .env file)
+EMAIL_BACKEND = config('EMAIL_BACKEND')  # Email backend configuration (e.g., SMTP)
+EMAIL_HOST = config('EMAIL_HOST')  # Host for the email service (e.g., SMTP server)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')  # Boolean for TLS encryption
+EMAIL_PORT = config('EMAIL_PORT')  # Port for the email service (e.g., 587 for TLS)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = "CuisionSynergy <nagendrareddy539@gmail.com>"
+DEFAULT_FROM_EMAIL = "CuisionSynergy <nagendrareddy539@gmail.com>"  # Default sender email address
 
+# Google API Key (ensure the key is safely stored and never exposed in code)
 GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 
+# GDAL Library Path for geographical data processing (ensure GDAL is correctly installed)
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal309.dll'
 
+# Security Policy Configuration for cross-origin resource sharing
 SECURE_CROSS_ORIGN_OPENER_POLICY = 'same-origin-allow-popups'
 
-# PayPal
+# PayPal Integration Configuration
+# Ensure you securely store your PayPal client credentials and avoid hardcoding in production
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
-# RazorPay
+# RazorPay Integration Configuration
+# Store RazorPay credentials securely, ensure access control
 RZP_KEY_ID = config('RZP_KEY_ID')
 RZP_KEY_SECRET = config('RZP_KEY_SECRET')
-
-
-
-
-

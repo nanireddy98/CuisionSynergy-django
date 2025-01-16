@@ -23,16 +23,28 @@ from . import views
 from marketplace import views as MarketPlaceViews
 
 urlpatterns = [
+                    # Admin panel route
                     path('admin/', admin.site.urls),
+
+                    # Home page route
                     path('', views.home, name='home'),
+
+                    # Include the 'accounts' app's URLs
                     path('', include('accounts.urls')),
+
+                    # Marketplace-related routes
                     path('marketplace/', include('marketplace.urls')),
+
+                    # Orders-related routes
                     path('orders/',include('orders.urls')),
 
-                    # Cart
+                    # Cart page route
                     path('cart/', MarketPlaceViews.cart, name='cart'),
-                    # Search
+
+                    # Search functionality route
                     path('search/', MarketPlaceViews.search, name='search'),
-                    # Checkout
+
+                    # Checkout page route
                     path('checkout/', MarketPlaceViews.checkout, name='checkout'),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Static file handling (media files)
+

@@ -4,8 +4,8 @@ from django.dispatch import receiver
 from .models import User, UserProfile
 
 
-@receiver(post_save,sender=User)
-def post_save_create_profile_receiver(sender,instance,created,**kwargs):
+@receiver(post_save, sender=User)
+def post_save_create_profile_receiver(sender, instance, created, **kwargs):
     """
     Signal handler for the `post_save` signal triggered by the User model.
 
@@ -18,21 +18,16 @@ def post_save_create_profile_receiver(sender,instance,created,**kwargs):
         # Create a UserProfile for the newly created User.
         UserProfile.objects.create(user=instance)
     else:
-        try:
-            # Attempt to fetch the existing UserProfile and save it.
-            profile = UserProfile.objects.get(user=instance)
-            profile.save()
-        except:
-            # If no UserProfile exists, create a new one.
-            UserProfile.objects.create(user=instance)
+        # Update the UserProfile if it exists, otherwise create a new one.
+        UserProfile.objects.get_or_create(user=instance)
 
 
-@receiver(pre_save,sender=User)
-def pre_save_create_profile_receiver(sender,instance,**kwargs):
+@receiver(pre_save, sender=User)
+def pre_save_create_profile_receiver(sender, instance, **kwargs):
     """
     Signal handler for the `pre_save` signal triggered by the User model.
 
     This function is called before a User instance is saved.
     """
-    print(instance.username,"this user being saved")
+    print(instance.username, "this user being saved")
 # post_save.connect(post_save_create_profile_receiver,sender=User)

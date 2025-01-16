@@ -1,16 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models.fields.related import OneToOneField
-
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.geos import Point
 
 
 class UserManager(BaseUserManager):
-    """Custom manager for the User model that defines methods for creating users and superusers."""
+    """
+    Custom manager for the User model that defines methods for creating users and superusers.
+    """
 
     def create_user(self, first_name, last_name, username, email, password=None):
-        """Create and return a regular user with the first_name,last_name,username,email,password."""
+        """
+        Create and return a regular user with the first_name,last_name,username,email,password.
+        """
         if not email:
             raise ValueError("User must have an Email Address")
         if not username:
@@ -30,7 +32,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, first_name, last_name, username, email, password=None):
-        """Create and return a superuser with the first_name,last_name,username,email,password."""
+        """
+        Create and return a superuser with the first_name,last_name,username,email,password.
+        """
         user = self.create_user(
             email=self.normalize_email(email),
             username=username,
@@ -48,8 +52,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    """Custom User model that replaces Django's default user model.
-    Supports additional fields and role-based functionality."""
+    """
+    Custom User model that replaces Django's default user model.
+    Supports additional fields and role-based functionality.
+    """
     VENDOR = 1
     CUSTOMER = 2
 
@@ -73,7 +79,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)  # Indicates if user is an admin
     is_staff = models.BooleanField(default=False)  # Indicates if user has staff privileges
     is_active = models.BooleanField(default=False)  # Indicates if user is active
-    is_superadmin = models.BooleanField(default=False)  # Indicates if user is a superadmin
+    is_superadmin = models.BooleanField(default=False)  # Indicates if user is a super admin
 
     # Associate the custom manager
     objects = UserManager()
@@ -95,6 +101,9 @@ class User(AbstractBaseUser):
         return True
 
     def get_role(self):
+        """
+        Return the role of the user as a string.
+        """
         if self.role == 1:
             user_role = 'Vendor'
         else:
@@ -103,6 +112,9 @@ class User(AbstractBaseUser):
 
 
 class UserProfile(models.Model):
+    """
+    UserProfile model that extends the User model with additional fields for profile and location information.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     profile_photo = models.ImageField(upload_to='users/profile_pics', blank=True, null=True)
     cover_photo = models.ImageField(upload_to='users/cover_pics', blank=True, null=True)
@@ -118,9 +130,15 @@ class UserProfile(models.Model):
     modified_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """
+        String representation of the user profile.
+        """
         return self.user.email
 
     def save(self, *args, **kwargs):
+        """
+        Override the save method to update the location field based on latitude and longitude.
+        """
         if self.latitude and self.longitude:
             self.location = Point(float(self.longitude), float(self.latitude))
             return super(UserProfile, self).save(*args, **kwargs)
