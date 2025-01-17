@@ -6,6 +6,7 @@ from accounts.models import User, UserProfile
 
 
 class Vendor(models.Model):
+    """Represents a vendor in the system."""
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     user_profile = models.OneToOneField(UserProfile, related_name='userprofile', on_delete=models.CASCADE)
     vendor_name = models.CharField(max_length=50)
@@ -19,6 +20,9 @@ class Vendor(models.Model):
         return self.vendor_name
 
     def is_open(self):
+        """
+        Checks if the vendor is currently open based on the opening hours.
+        """
         today = date.today().isoweekday()
         current_day_opening_hours = OpeningHour.objects.filter(vendor=self, day=today)
         current_time = datetime.now().strftime("%H:%M:%S")
@@ -61,6 +65,7 @@ class Vendor(models.Model):
 
 
 class OpeningHour(models.Model):
+    """Represents the opening hours of a vendor."""
     DAYS = [
         (1, "Monday"),
         (2, "Tuesday"),
@@ -85,4 +90,6 @@ class OpeningHour(models.Model):
         unique_together = ('vendor', 'day', 'from_hour', 'to_hour')
 
     def __str__(self):
+        # automatically provided method for fields with choices.
+        # It returns the human-readable value for the field, based on the choice value.
         return self.get_day_display()

@@ -16,13 +16,14 @@ from orders.models import Order, OrderedFood
 
 
 def get_vendor(request):
-    vendor = Vendor.objects.get(user=request.user)
-    return vendor
+    """Retrieve the Vendor instance associated with the current user."""
+    return Vendor.objects.get(user=request.user)
 
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vprofile(request):
+    """View to display and update vendor profile and user profile information."""
     profile = get_object_or_404(UserProfile, user=request.user)
     vendor = get_object_or_404(Vendor, user=request.user)
 
@@ -52,6 +53,7 @@ def vprofile(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def menu_builder(request):
+    """View to display the menu builder with categories for the current vendor."""
     vendor = get_vendor(request)
     categories = Category.objects.filter(vendor=vendor).order_by('created_at')
     context = {
@@ -63,6 +65,7 @@ def menu_builder(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def fooditems_by_category(request, pk):
+    """View to display food items by category for the current vendor."""
     vendor = get_vendor(request)
     categories = get_object_or_404(Category, pk=pk)
     food_items = FoodItem.objects.filter(vendor=vendor, category=categories)
@@ -76,6 +79,7 @@ def fooditems_by_category(request, pk):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def add_category(request):
+    """View to add a new category for the current vendor."""
     if request.method == "POST":
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -100,6 +104,7 @@ def add_category(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def edit_category(request, pk=None):
+    """View to edit an existing category for the current vendor."""
     category = get_object_or_404(Category, pk=pk)
     if request.method == "POST":
         form = CategoryForm(request.POST, instance=category)
@@ -125,6 +130,7 @@ def edit_category(request, pk=None):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def delete_category(request, pk=None):
+    """View to delete an existing category for the current vendor."""
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     messages.success(request, "Category has been deleted Successfully")
@@ -134,6 +140,7 @@ def delete_category(request, pk=None):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def add_food(request):
+    """View to add a new food item for the current vendor."""
     if request.method == "POST":
         form = FoodItemForm(request.POST, request.FILES)
         if form.is_valid():
@@ -159,6 +166,7 @@ def add_food(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def edit_food(request, pk=None):
+    """View to edit an existing food item for the current vendor."""
     food = get_object_or_404(FoodItem, pk=pk)
     if request.method == "POST":
         form = FoodItemForm(request.POST, request.FILES, instance=food)
@@ -186,6 +194,7 @@ def edit_food(request, pk=None):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def delete_food(request, pk):
+    """View to delete an existing food item for the current vendor."""
     food = get_object_or_404(FoodItem, pk=pk)
     food.delete()
     messages.success(request, "Food has been deleted Successfully")
@@ -193,6 +202,7 @@ def delete_food(request, pk):
 
 
 def opening_hour(request):
+    """Display the opening hours for the current vendor."""
     opening_hours = OpeningHour.objects.filter(vendor=get_vendor(request))
     form = OpeningHourForm()
     context = {
@@ -203,6 +213,7 @@ def opening_hour(request):
 
 
 def opening_hour_add(request):
+    """Add a new opening hour for the current vendor via an AJAX request."""
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == "XMLHttpRequest" and request.method == "POST":
             day = request.POST['day']
@@ -229,6 +240,7 @@ def opening_hour_add(request):
 
 
 def remove_opening_hour(request, pk):
+    """Remove an existing opening hour for the current vendor via an AJAX request."""
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             hour = get_object_or_404(OpeningHour, pk=pk)
@@ -237,6 +249,7 @@ def remove_opening_hour(request, pk):
 
 
 def order_detail(request, order_number):
+    """Display the details of a specific order for the current vendor."""
     order = Order.objects.get(order_number=order_number, is_ordered=True)
     ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
     context = {
@@ -250,6 +263,7 @@ def order_detail(request, order_number):
 
 
 def my_orders(request):
+    """Display all the orders for the current vendor."""
     vendor = Vendor.objects.get(user=request.user)
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
     context = {
