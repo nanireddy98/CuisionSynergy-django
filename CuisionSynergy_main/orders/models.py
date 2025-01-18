@@ -81,13 +81,11 @@ class Order(models.Model):
         if self.total_data:
             total_data = json.loads(self.total_data)  # Parse the total data from JSON
             data = total_data.get(str(vendor.id))  # Get vendor-specific dat
-            print(data)
             for k, v in data.items():
                 subtotal += float(k)
                 v = v.replace("'", '"')
                 v = json.loads(v)
                 tax_dict.update(v)
-                print(tax_dict)
                 # Calculate tax based on the structure {'CGST': {'14.00': '84.00'}, 'SGST': {'9.00': '54.00'}}
                 for i in v:
                     for j in v[i]:

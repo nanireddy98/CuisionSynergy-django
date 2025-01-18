@@ -29,6 +29,27 @@ urlpatterns = [
                     # Home page route
                     path('', views.home, name='home'),
 
+                    # about-us page
+                    path('about-us/', views.about_us, name='about-us'),
+
+                    # careers page
+                    path('career/', views.career, name='career'),
+
+                    # press-releases page
+                    path('press/', views.press, name='press'),
+
+                    # blog page
+                    path('blogs/', views.blogs, name='blogs'),
+
+                    # terms and conditions page
+                    path('terms_conditions/', views.terms_conditions, name='terms_conditions'),
+
+                    # privacy-policy page
+                    path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
+
+                    # cookie policy page
+                    path('cookie_policy/', views.cookie_policy, name='cookie_policy'),
+
                     # Include the 'accounts' app's URLs
                     path('', include('accounts.urls')),
 

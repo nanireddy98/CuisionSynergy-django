@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %}Place Order{% endblock %}
 {% load static %}
 {% block content %}
 
@@ -173,7 +174,7 @@
         "currency": "INR",
         "name": "FoodOnline",
         "description": "FoodOnline - Multi vendor Restaurant Application",
-        "image": "{% static 'logo/foodOnlineLogo.png' %}",
+        "image": "{% static 'logo/cs.png' %}",
         "order_id": "{{ rzp_order_id }}",
         "handler": function (response){
 

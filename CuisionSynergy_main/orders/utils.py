@@ -20,11 +20,9 @@ def order_total_by_vendor(order,vendor_id):
     # Iterate through the vendor data to calculate the subtotal and tax
     for k, v in data.items():
         subtotal += float(k)
-        print(subtotal)
         v = v.replace("'", '"')  # Replace single quotes with double quotes to ensure valid JSON format
         v = json.loads(v)
         tax_dict.update(v)
-        print(tax_dict)
 
         # Iterate through the tax data to calculate the total tax
         for i in v:

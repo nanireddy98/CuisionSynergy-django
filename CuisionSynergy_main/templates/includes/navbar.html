@@ -8,7 +8,7 @@
                         <div class="logo">
                             <figure>
                                 <a href="{% url 'home' %}" class="light-logo">
-                                    <img src="{% static 'logo/foodOnlinelogo.png' %}" alt="CuisineSynergy" width="250">
+                                    <img src="{% static 'logo/cs.png' %}" alt="CuisineSynergy" height="80" width="120">
                                 </a>
                             </figure>
                         </div>
@@ -66,11 +66,6 @@
         function showPosition(position) {
                 var lat = position.coords.latitude
                 var lng = position.coords.longitude
-<!--                x.value = lat +','+lng-->
-<!--          x.innerHTML = "Latitude: " + position.coords.latitude +-->
-<!--          "<br>Longitude: " + position.coords.longitude;-->
-<!--            var lat = '16.4777834'-->
-<!--            var lng = '79.4318223'-->
 
            // Send an AJAX request to the Google Maps API to retrieve location data using latitude and longitude
             var GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}'

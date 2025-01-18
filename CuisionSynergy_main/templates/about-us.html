@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Cuision Synergy Restaurant App{% endblock %}
+
+{% load static %}
+
+{% block content %}
+    <div class="about-us" id="about-us-section">
+        <h1>Welcome to Cuision Synergy Restaurant App</h1>
+        <p>At Cuision Synergy, we bring you the finest culinary experiences right at your fingertips. Our app is designed to enhance your dining experience by offering easy access to menus, online ordering, reservations, and more.</p>
+
+        <h2>Our Vision</h2>
+        <p>We aim to revolutionize the way foodies experience dining by leveraging technology to provide a seamless and interactive platform for customers and restaurant owners alike.</p>
+
+        <h2>What We Offer</h2>
+        <ul>
+            <li>Browse menus from various restaurants</li>
+            <li>Order food online for quick delivery or pick-up</li>
+            <li>Make hassle-free reservations for your next dining experience</li>
+            <li>Track your order in real time</li>
+        </ul>
+
+        <h2>Why Choose Cuision Synergy?</h2>
+        <p>Our app is built with user experience in mind, ensuring that you have access to the best dining options wherever you go. We partner with top-rated restaurants to ensure you get the freshest food delivered to you in the quickest time.</p>
+
+        <h2>Contact Us</h2>
+        <p>If you have any questions or feedback, feel free to reach out to us at <a href="mailto:info@cuisionsynergy.com">info@cuisionsynergy.com</a>.</p>
+    </div>
+
+    <script>
+        // Adding the scroll animation on page load
+        window.addEventListener('load', function() {
+            var aboutSection = document.getElementById('about-us-section');
+            aboutSection.classList.add('animate-scroll');
+        });
+    </script>
+{% endblock %}
+
+{% block styles %}
+    <style>
+        /* Overall Background and Padding */
+        body {
+            background-color: #f4f7fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .about-us {
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: all 1s ease;
+            padding: 50px;
+            margin: 0 auto;
+            max-width: 1200px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .animate-scroll {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #0056b3;
+            margin-top: 40px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+            margin-top: 15px;
+        }
+
+        li {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .about-us {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+{% endblock %}

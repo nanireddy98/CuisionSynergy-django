@@ -34,3 +34,31 @@ def home(request):
         'vendors': vendors
     }
     return render(request, "home.html", context)
+
+
+def about_us(request):
+    return render(request,"about-us.html")
+
+
+def career(request):
+    return render(request,"career.html")
+
+
+def press(request):
+    return render(request,"press.html")
+
+
+def blogs(request):
+    return render(request,"blogs.html")
+
+
+def terms_conditions(request):
+    return render(request,"terms_conditions.html")
+
+
+def privacy_policy(request):
+    return render(request,"privacy_policy.html")
+
+
+def cookie_policy(request):
+    return render(request,"cookie_policy.html")
