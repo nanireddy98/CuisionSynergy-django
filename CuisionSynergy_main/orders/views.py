@@ -18,11 +18,13 @@ client = razorpay.Client(auth=(RZP_KEY_ID, RZP_KEY_SECRET))
 
 @login_required(login_url='login')
 def place_order(request):
+    """Handles order placement."""
     cartitems = Cart.objects.filter(user=request.user).order_by('created_at')
     cart_count = cartitems.count()
     if cart_count <= 0:
         return redirect('marketplace')
 
+    # Get unique vendor IDs from the cart items
     vendor_ids = list({i.fooditem.vendor.id for i in cartitems})
 
     # {"Vendor_id": {"subtotal":{"tax_type":{"tax_percentage": "tax_amount"}}}}
@@ -31,9 +33,13 @@ def place_order(request):
     subtotal = 0
     k = {}
     total_data = {}
+
+    # Calculate subtotal and tax data for each vendor
     for i in cartitems:
         fooditem = FoodItem.objects.get(pk=i.fooditem.id, vendor_id__in=vendor_ids)
         v_id = fooditem.vendor.id
+
+        # Calculate subtotal for each vendor
         if v_id in k:
             subtotal = k[v_id]
             subtotal += (i.fooditem.price * i.quantity)
@@ -42,7 +48,7 @@ def place_order(request):
             subtotal = (i.fooditem.price * i.quantity)
             k[v_id] = subtotal
 
-        # calculate tax data
+        # Calculate tax data for the vendor
         tax_dict = {}
         for i in get_tax:
             tax_type = i.tax_type
@@ -81,9 +87,9 @@ def place_order(request):
             order.vendors.add(*vendor_ids)
             order.save()
 
-            # razorpay payment
+            # Razorpay payment integration
             data = {
-                "amount": float(order.total) * 100,
+                "amount": float(order.total) * 100,  # Convert to paise
                 "currency": "INR",
                 "receipt": "receipt #" + order.order_number,
                 "notes": {
@@ -109,6 +115,7 @@ def place_order(request):
 
 @login_required(login_url='login')
 def payments(request):
+    """Handles payment confirmation."""
     # check if request is Ajax or Not
     if request.headers.get('x-requested-with') == "XMLHttpRequest" and request.method == "POST":
         # Store the Payment Details in payment model
@@ -125,15 +132,13 @@ def payments(request):
             status=status,
         )
         payment.save()
-        # return HttpResponse("Payment Saved")
 
-        # update the Order model
+        # Update the order model with the payment details
         order.payment = payment
         order.is_ordered = True
         order.save()
-        # return HttpResponse("Order Updated")
 
-        # move the cart items to ordered food model
+        # Transfer the cart items to the OrderedFood model
         cartitems = Cart.objects.filter(user=request.user)
         for item in cartitems:
             ordered_food = OrderedFood()
@@ -145,9 +150,8 @@ def payments(request):
             ordered_food.price = item.fooditem.price
             ordered_food.amount = item.fooditem.price * item.quantity  # total amount
             ordered_food.save()
-        # return HttpResponse("Ordered Food Saved")
 
-        # Send Order Confirmation email to customer
+        # Send order confirmation email to the customer
         mail_subject = "Thankyou for Ordering With Us"
         mail_template = 'orders/order_confirmation_email_customer.html'
         ordered_food = OrderedFood.objects.filter(order=order)
@@ -165,7 +169,6 @@ def payments(request):
             'tax_data': tax_data,
         }
         send_notification_mail(mail_subject, mail_template, context)
-        # return HttpResponse("Ordered Food Saved and Email Sen To Customer")
 
         # Send Order Received email to vendor
         mail_subject = "You have Received a New Order"
@@ -187,7 +190,6 @@ def payments(request):
                     'vendor_grand_total': order_total_by_vendor(order, i.fooditem.vendor.id)['grand_total']
                 }
                 send_notification_mail(mail_subject, mail_template, context)
-        # return HttpResponse("Ordered Food Saved and Email Sent To Vendor")
 
         # clear cart if payment is Success
         cartitems.delete()
@@ -198,10 +200,10 @@ def payments(request):
             'transaction_id': transaction_id
         }
         return JsonResponse(response)
-    return HttpResponse("Payments")
 
 
 def order_complete(request):
+    """Displays the order completion page."""
     order_number = request.GET.get('order_no')
     transaction_id = request.GET.get('trans_id')
     try:

@@ -9,15 +9,15 @@ from django.contrib.gis.measure import D  # D is shortcut for Distance
 from django.contrib.gis.db.models.functions import Distance
 
 from accounts.models import UserProfile
-from vendor.models import Vendor
+from vendor.models import Vendor, OpeningHour
 from menu.models import Category, FoodItem
 from .models import Cart
 from .context_processors import get_cart_counter, get_cart_amounts
-from vendor.models import OpeningHour
 from orders.forms import OrderForm
 
 
 def marketplace(request):
+    """ View for the marketplace, listing all approved and active vendors."""
     vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)
     vendor_count = vendors.count()
     context = {
@@ -28,7 +28,11 @@ def marketplace(request):
 
 
 def vendor_detail(request, vendor_slug):
+    """View to display details of a specific vendor."""
     vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
+    # Fetch categories related to the vendor, along with prefetching related available food items
+    # prefetch -    Reduces the number of queries to the database by fetching all related data in a single query.
+    # prefetch_related is used to prefetch related objects, in this case, fooditems which is a related ForeignKey or ManyToMany field on Category.
     categories = Category.objects.filter(vendor=vendor).prefetch_related(
         Prefetch(
             'fooditems',
@@ -57,6 +61,7 @@ def vendor_detail(request, vendor_slug):
 
 
 def add_to_cart(request, food_id=None):
+    """View to add a food item to the cart."""
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == "XMLHttpRequest":
             # check if food exists
@@ -99,6 +104,7 @@ def add_to_cart(request, food_id=None):
 
 
 def decrease_cart(request, food_id=None):
+    """View to decrease the quantity of a food item in the cart."""
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == "XMLHttpRequest":
             # check if food exists
@@ -145,6 +151,7 @@ def decrease_cart(request, food_id=None):
 
 @login_required(login_url='login')
 def cart(request):
+    """ View to display the user's cart."""
     cartitems = Cart.objects.filter(user=request.user).order_by('created_at')
     context = {
         'cartitems': cartitems
@@ -153,6 +160,7 @@ def cart(request):
 
 
 def delete_cart(request, cart_id=None):
+    """View to delete an item from the cart."""
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == "XMLHttpRequest":
             try:
@@ -177,6 +185,7 @@ def delete_cart(request, cart_id=None):
 
 
 def search(request):
+    """Search for vendors based on user-provided address, latitude, longitude, keyword, and radius."""
     if 'address' not in request.GET:
         return redirect('marketplace')
     else:
@@ -187,6 +196,7 @@ def search(request):
         radius = request.GET['radius']
 
         # Retrieve vendor IDs that offer the specified food item requested by the user
+        # extracts the vendor IDs associated with these FoodItem records & returns them as a flat list instead of a list of tuples.
         fetch_vendors_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword,
                                                              is_available=True).values_list('vendor', flat=True)
 
@@ -213,6 +223,7 @@ def search(request):
 
 
 def checkout(request):
+    """Display the checkout form pre-filled with the user's profile information."""
     cartitems = Cart.objects.filter(user=request.user).order_by('created_at')
     cart_count = cartitems.count()
     if cart_count <= 0:

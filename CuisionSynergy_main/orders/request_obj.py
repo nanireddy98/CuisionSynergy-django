@@ -5,8 +5,7 @@ def RequestObjMiddleWare(get_response):
     # One-time configuration and initialization.
 
     def middleware(request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
+        # Code to be executed for each request before the view (and later middleware) are called.
         models.request_object = request
 
         response = get_response(request)
