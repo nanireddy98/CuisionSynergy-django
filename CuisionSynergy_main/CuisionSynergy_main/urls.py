@@ -23,49 +23,51 @@ from . import views
 from marketplace import views as MarketPlaceViews
 
 urlpatterns = [
-                    # Admin panel route
-                    path('admin/', admin.site.urls),
+                  # Admin panel route
+                  path('admin/', admin.site.urls),
 
-                    # Home page route
-                    path('', views.home, name='home'),
+                  # Home page route
+                  path('', views.home, name='home'),
 
-                    # about-us page
-                    path('about-us/', views.about_us, name='about-us'),
+                  # about-us page
+                  path('about-us/', views.about_us, name='about-us'),
 
-                    # careers page
-                    path('career/', views.career, name='career'),
+                  # careers page
+                  path('career/', views.career, name='career'),
 
-                    # press-releases page
-                    path('press/', views.press, name='press'),
+                  # press-releases page
+                  path('press/', views.press, name='press'),
 
-                    # blog page
-                    path('blogs/', views.blogs, name='blogs'),
+                  # blog page
+                  path('blogs/', views.blogs, name='blogs'),
 
-                    # terms and conditions page
-                    path('terms_conditions/', views.terms_conditions, name='terms_conditions'),
+                  # terms and conditions page
+                  path('terms_conditions/', views.terms_conditions, name='terms_conditions'),
 
-                    # privacy-policy page
-                    path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
+                  # privacy-policy page
+                  path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
 
-                    # cookie policy page
-                    path('cookie_policy/', views.cookie_policy, name='cookie_policy'),
+                  # cookie policy page
+                  path('cookie_policy/', views.cookie_policy, name='cookie_policy'),
 
-                    # Include the 'accounts' app's URLs
-                    path('', include('accounts.urls')),
+                  # Include the 'accounts' app's URLs
+                  path('', include('accounts.urls')),
 
-                    # Marketplace-related routes
-                    path('marketplace/', include('marketplace.urls')),
+                  # Marketplace-related routes
+                  path('marketplace/', include('marketplace.urls')),
 
-                    # Orders-related routes
-                    path('orders/',include('orders.urls')),
+                  # Contact-related routes
+                  path('contact/', include('contact.urls')),
 
-                    # Cart page route
-                    path('cart/', MarketPlaceViews.cart, name='cart'),
+                  # Orders-related routes
+                  path('orders/', include('orders.urls')),
 
-                    # Search functionality route
-                    path('search/', MarketPlaceViews.search, name='search'),
+                  # Cart page route
+                  path('cart/', MarketPlaceViews.cart, name='cart'),
 
-                    # Checkout page route
-                    path('checkout/', MarketPlaceViews.checkout, name='checkout'),
+                  # Search functionality route
+                  path('search/', MarketPlaceViews.search, name='search'),
+
+                  # Checkout page route
+                  path('checkout/', MarketPlaceViews.checkout, name='checkout'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Static file handling (media files)
-

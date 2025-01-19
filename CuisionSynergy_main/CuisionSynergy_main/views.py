@@ -1,8 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib import messages
 
 from vendor.models import Vendor
 from .utils import get_or_set_current_location
@@ -37,28 +37,28 @@ def home(request):
 
 
 def about_us(request):
-    return render(request,"about-us.html")
+    return render(request, "about-us.html")
 
 
 def career(request):
-    return render(request,"career.html")
+    return render(request, "career.html")
 
 
 def press(request):
-    return render(request,"press.html")
+    return render(request, "press.html")
 
 
 def blogs(request):
-    return render(request,"blogs.html")
+    return render(request, "blogs.html")
 
 
 def terms_conditions(request):
-    return render(request,"terms_conditions.html")
+    return render(request, "terms_conditions.html")
 
 
 def privacy_policy(request):
-    return render(request,"privacy_policy.html")
+    return render(request, "privacy_policy.html")
 
 
 def cookie_policy(request):
-    return render(request,"cookie_policy.html")
+    return render(request, "cookie_policy.html")

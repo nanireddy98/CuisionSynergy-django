@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'marketplace',
     'customers',
     'orders',
+    'contact',
 ]
 
 MIDDLEWARE = [
@@ -164,6 +165,7 @@ EMAIL_PORT = config('EMAIL_PORT')  # Port for the email service (e.g., 587 for T
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = "CuisionSynergy <nagendrareddy539@gmail.com>"  # Default sender email address
+NOTIFY_EMAIL = "CuisionSynergy <nagendrareddy539@gmail.com>"
 
 # Google API Key (ensure the key is safely stored and never exposed in code)
 GOOGLE_API_KEY = config('GOOGLE_API_KEY')
